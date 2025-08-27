@@ -27,7 +27,7 @@ export const placeOrderCOD = async (req, res) => {
             amount,
             address,
             paymentType: "COD",
-            isPaid: true // COD is considered paid
+            isPaid: false
         });
 
         return res.json({ success: true, message: "Order placed successfully!" });
@@ -106,8 +106,9 @@ export const stripeWebhooks = async (req, res) => {
     let event;
 
     try {
+        // Stripe requires raw body
         event = stripe.webhooks.constructEvent(
-            req.body,  // must be raw buffer
+            req.body,
             sig,
             process.env.STRIPE_WEBHOOK_SECRET
         );
@@ -116,17 +117,50 @@ export const stripeWebhooks = async (req, res) => {
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
-    if (event.type === "checkout.session.completed") {
-        const session = event.data.object;
-        const { orderId, userId } = session.metadata;
+    try {
+        let orderId, userId;
 
-        await Order.findByIdAndUpdate(orderId, { isPaid: true });
+        // Handle different Stripe events
+        if (event.type === "checkout.session.completed") {
+            const session = event.data.object;
+            orderId = session.metadata.orderId;
+            userId = session.metadata.userId;
+        } else if (event.type === "payment_intent.succeeded") {
+            const paymentIntent = event.data.object;
+            orderId = paymentIntent.metadata?.orderId;
+            userId = paymentIntent.metadata?.userId;
+        } else {
+            // ignore other events
+            return res.status(200).json({ received: true });
+        }
+
+        if (!orderId || !userId) {
+            console.error("Missing metadata for orderId or userId");
+            return res.status(400).send("Missing metadata");
+        }
+
+        // Update order to mark as paid
+        const updatedOrder = await Order.findByIdAndUpdate(
+            orderId,
+            { isPaid: true },
+            { new: true } // return updated document
+        );
+
+        if (!updatedOrder) {
+            console.error(`Order not found with ID: ${orderId}`);
+            return res.status(404).send("Order not found");
+        }
+
+        // Clear user's cart
         await User.findByIdAndUpdate(userId, { cartItems: {} });
 
-        console.log(`✅ Order ${orderId} marked as paid.`);
-    }
+        console.log("✅ Order marked as paid:", updatedOrder);
 
-    res.json({ received: true });
+        res.status(200).json({ received: true });
+    } catch (err) {
+        console.error("Error handling webhook:", err.message);
+        res.status(500).send("Internal server error");
+    }
 };
 
 
