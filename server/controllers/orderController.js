@@ -107,35 +107,28 @@ export const stripeWebhooks = async (req, res) => {
 
     try {
         event = stripe.webhooks.constructEvent(
-            req.body,
+            req.body,  // must be raw buffer
             sig,
             process.env.STRIPE_WEBHOOK_SECRET
         );
     } catch (err) {
+        console.error("Webhook signature verification failed:", err.message);
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
-    switch (event.type) {
-        case "checkout.session.completed": {
-            const session = event.data.object;
-            const { orderId, userId } = session.metadata;
+    if (event.type === "checkout.session.completed") {
+        const session = event.data.object;
+        const { orderId, userId } = session.metadata;
 
-            await Order.findByIdAndUpdate(orderId, { isPaid: true });
-            await User.findByIdAndUpdate(userId, { cartItems: {} });
-            break;
-        }
-        case "payment_intent.payment_failed": {
-            const session = event.data.object;
-            const { orderId } = session.metadata;
-            await Order.findByIdAndDelete(orderId);
-            break;
-        }
-        default:
-            console.log(`Unhandled event type: ${event.type}`);
+        await Order.findByIdAndUpdate(orderId, { isPaid: true });
+        await User.findByIdAndUpdate(userId, { cartItems: {} });
+
+        console.log(`✅ Order ${orderId} marked as paid.`);
     }
 
     res.json({ received: true });
-}
+};
+
 
 // Get Orders by userId : /api/order/user
 export const getUserOrders = async (req, res) => {
