@@ -105,6 +105,7 @@ export const placeOrderStripe = async (req, res) => {
 // Stripe Webhooks to verify payments : /stripe
 export const stripeWebhooks = async (req, res) => {
     const sig = req.headers["stripe-signature"];
+    console.log("🔔 Stripe webhook received:", req.body.type);
     let event;
 
     try {
@@ -114,6 +115,7 @@ export const stripeWebhooks = async (req, res) => {
             sig,
             process.env.STRIPE_WEBHOOK_SECRET
         );
+        console.log("✅ Verified event:", event.type);
     } catch (err) {
         console.error("Webhook signature verification failed:", err.message);
         return res.status(400).send(`Webhook Error: ${err.message}`);
