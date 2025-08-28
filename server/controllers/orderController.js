@@ -105,9 +105,7 @@ export const placeOrderStripe = async (req, res) => {
 // Stripe Webhooks to verify payments : /stripe
 export const stripeWebhooks = async (req, res) => {
     const sig = req.headers["stripe-signature"];
-    console.log("🔔 Stripe webhook received:", req.body.type);
     let event;
-
     try {
         // Stripe requires raw body
         event = stripe.webhooks.constructEvent(
@@ -115,15 +113,12 @@ export const stripeWebhooks = async (req, res) => {
             sig,
             process.env.STRIPE_WEBHOOK_SECRET
         );
-        console.log("✅ Verified event:", event.type);
     } catch (err) {
         console.error("Webhook signature verification failed:", err.message);
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
-
     try {
         let orderId, userId;
-
         // Handle different Stripe events
         if (event.type === "checkout.session.completed") {
             const session = event.data.object;
@@ -137,29 +132,21 @@ export const stripeWebhooks = async (req, res) => {
             // ignore other events
             return res.status(200).json({ received: true });
         }
-
         if (!orderId || !userId) {
             console.error("Missing metadata for orderId or userId");
             return res.status(400).send("Missing metadata");
         }
-
         // Update order to mark as paid
         const updatedOrder = await Order.findByIdAndUpdate(
             orderId,
             { isPaid: true },
             { new: true } // return updated document
         );
-
         if (!updatedOrder) {
-            console.error(`Order not found with ID: ${orderId}`);
             return res.status(404).send("Order not found");
         }
-
         // Clear user's cart
         await User.findByIdAndUpdate(userId, { cartItems: {} });
-
-        console.log("✅ Order marked as paid:", updatedOrder);
-
         res.status(200).json({ received: true });
     } catch (err) {
         console.error("Error handling webhook:", err.message);
