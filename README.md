@@ -1,39 +1,81 @@
 # 🛒 GreenCart – Online Grocery Store
 
-GreenCart is a **full-stack MERN (MongoDB, Express, React, Node.js)** based online grocery shopping app.  
-It allows customers to browse products, manage cart, place orders with **Cash on Delivery (COD)** or **Stripe Online Payments**, and track orders.  
-Sellers/Admins can manage products and view all orders.
+GreenCart is a **full-stack MERN (MongoDB, Express, React, Node.js)** grocery app. Customers can browse products, manage a shopping cart, save addresses, and place orders via **Cash on Delivery (COD)** or **Stripe Online Payments**. Sellers/Admins can manage products and view all orders.
+
+👉 Live demo: [greencart-sand.vercel.app](https://greencart-sand.vercel.app)
 
 ---
 
-## ✨ Features
+##  Features
 
-### 👤 User
-- Sign up / Login with JWT authentication
-- Browse grocery products with offers
-- Add/Remove items to cart
-- Save multiple delivery addresses
+###  User
+- Register & login using JWT & cookies
+- Browse categories and products with offers
+- Add/remove items in the cart
+- Save delivery addresses
 - Checkout with:
   - **Cash on Delivery (COD)**
-  - **Stripe Online Payment** (secure with webhooks)
-- View order history & order status updates
+  - **Stripe Online Payment** (secure with webhook order updates)
+- View order history and real-time payment status
 
-### 🛍️ Seller/Admin
-- Secure login with admin credentials
-- Add / Edit / Delete products
-- Manage orders from customers
-- View all orders with payment status
+###  Seller/Admin
+- Secure login (email + password via environment vars)
+- Add / edit / delete products (with images hosted on Cloudinary)
+- View all customer orders with payment status
 
 ---
 
-## ⚙️ Tech Stack
+##  Tech Stack
 
-- **Frontend:** React + Vite, TailwindCSS  
-- **Backend:** Node.js + Express  
-- **Database:** MongoDB (Mongoose ODM)  
-- **Authentication:** JWT + Cookies  
-- **Payments:** Stripe Checkout + Webhooks  
-- **Hosting:** Vercel (frontend & backend), MongoDB Atlas (DB), Cloudinary (images)  
+| Layer      | Technology                          |
+|------------|--------------------------------------|
+| Frontend   | React + Vite, Tailwind CSS           |
+| Backend    | Node.js, Express, JWT auth           |
+| Database   | MongoDB Atlas with Mongoose ODM      |
+| Storage    | Cloudinary for product images        |
+| Payments   | Stripe Checkout & Webhooks           |
+| Hosting    | Vercel (frontend & backend)          |
 
-## 📦 Project Structure
+---
+## 📸 Screenshots
+
+### 👤 User Side
+- **Home Page**
+  ![Home](./client/src/assets/Home.JPG)
+
+- **All Products Page**
+  ![All Products](./client/src/assets/all-products_page.JPG)
+
+- **Single Product Page**
+  ![Product Page](./client/src/assets/product_page.JPG)
+
+- **Related Products**
+  ![Related Products](./client/src/assets/related-product_page.JPG)
+
+- **Cart Page**
+  ![Cart](./client/src/assets/cart_page.JPG)
+
+- **Sign Up Page**
+  ![Sign Up](./client/src/assets/sign-up_page.JPG)
+
+- **Login Page**
+  ![Login](./client/src/assets/login_page.JPG)
+
+- **My Orders Page**
+  ![My Orders](./client/src/assets/my-orders_page.JPG)
+
+
+### 🛍️ Seller/Admin Side
+- **Seller Login**
+  ![Seller Login](./client/src/assets/seller-login_page.JPG)
+
+- **Seller Dashboard (Home)**
+  ![Seller Home](./client/src/assets/seller-home_page.JPG)
+
+- **Seller Product List**
+  ![Seller Product List](./client/src/assets/seller-productlist_page.JPG)
+
+- **Seller Orders**
+  ![Seller Orders](./client/src/assets/seller-orders_page.JPG)
+
 
