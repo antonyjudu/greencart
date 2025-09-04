@@ -18,7 +18,7 @@ export const register = async (req, res) => {
         
         const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '7d'});
 
-        res.cookie('token', token, {
+        res.cookie('userToken', token, {
             httpOnly: true,  // Prevent JavaScript to access cookie
             secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
             sameSite: process.env.NODE_ENV === 'production' ? 'none' :'strict', // CSRF Production
@@ -49,7 +49,7 @@ export const login = async (req, res) => {
             return res.json({success: false, message: "Invalid Email or Password"});
 
         const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '7d'});
-        res.cookie('token', token, {
+        res.cookie('userToken', token, {
             httpOnly: true,  
             secure: process.env.NODE_ENV === 'production', 
             sameSite: process.env.NODE_ENV === 'production' ? 'none' :'strict', 
@@ -81,7 +81,7 @@ export const isAuth = async (req, res) => {
 // Check User Logout : /api/user/logout
 export  const logout = async (req, res) => {
     try {
-        res.clearCookie('token', {
+        res.clearCookie('userToken', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
