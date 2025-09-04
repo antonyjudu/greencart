@@ -41,6 +41,8 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+app.options('*', cors());
+
 app.get('/', (req, res) => res.send('API is working!'));
 app.use('/api/user', userRouter);
 app.use('/api/seller', sellerRouter);
