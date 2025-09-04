@@ -34,7 +34,7 @@ GreenCart is a **full-stack MERN (MongoDB, Express, React, Node.js)** grocery ap
 | Database   | MongoDB Atlas with Mongoose ODM      |
 | Storage    | Cloudinary for product images        |
 | Payments   | Stripe Checkout & Webhooks           |
-| Hosting    | Vercel (frontend & backend)          |
+| Hosting    | Vercel (frontend ), render (backend) |
 
 ---
 ## 📸 Screenshots
