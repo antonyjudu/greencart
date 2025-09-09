@@ -4,7 +4,7 @@ import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 import toast from "react-hot-toast";
 
 function Login() {
-  const { setShowUserLogin, setUser, axios, navigate } = useAppContext();
+  const { setShowUserLogin, setUser, axios, navigate, fetchUser } = useAppContext();
 
   const [state, setState] = React.useState("login");
   const [name, setName] = React.useState("");
@@ -17,7 +17,7 @@ function Login() {
         const { data } = await axios.post(`/api/user/${state}`,  {name, email, password});
         if(data.success){
           navigate('/');
-          setUser(data.user);
+          await fetchUser();
           setShowUserLogin(false);
         }
         else{
