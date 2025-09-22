@@ -1,9 +1,9 @@
 import React from 'react'
-import MainBanner from '../components/MainBanner'
-import Categories from '../components/Categories'
-import BestSeller from '../components/BestSeller'
-import BottomBanner from '../components/BottomBanner'
-import NewsLetter from '../components/NewsLetter'
+import MainBanner from '../components/MainBanner.jsx'
+import Categories from '../components/Categories.jsx'
+import BestSeller from '../components/BestSeller.jsx'
+import BottomBanner from '../components/BottomBanner.jsx'
+import NewsLetter from '../components/NewsLetter.jsx'
 
 function Home() {
   return (

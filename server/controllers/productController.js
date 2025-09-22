@@ -44,11 +44,20 @@ export const productById = async (req, res) => {
 // Change Product inStock : /api/product/stock
 export const changeStock = async (req, res) => {
     try {
-        const { id, inStock } = req.body;
-        await Product.findByIdAndUpdate(id, {inStock});
-        res.json({success: true, message: "Stock Updated"});
+        const { id, quantity } = req.body;
+        if (quantity < 0) {
+            return res.json({ success: false, message: "Quantity cannot be negative" });
+        }
+
+        const updatedProduct = await Product.findByIdAndUpdate(
+            id,
+            { quantity, inStock: quantity > 0 },
+            { new: true }
+        );
+
+        res.json({ success: true, message: "Stock Updated", product: updatedProduct });
     } catch (error) {
         console.log(error.message);
-        res.json({success: false, message: error.message});
-    }   
-}
+        res.json({ success: false, message: error.message });
+    }
+};
